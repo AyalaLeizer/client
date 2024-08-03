@@ -3,9 +3,10 @@ import validator from 'validator';
 import { AuthContext } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import './SignupPage.scss';
 
 const SignupPage = () => {
-    const {error, handleSignup} = useContext(AuthContext);
+    const { error, handleSignup } = useContext(AuthContext);
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -27,21 +28,24 @@ const SignupPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validator.isStrongPassword(password)) {
-            // Handle form submission
-            console.log('Form submitted', { userName, password });
-            const success = await handleSignup({ userName, password });
-            if (success) {
-                toast.success("user signed up successfully");
-                navigate("/login");
+            try {
+                const response = await handleSignup({ userName, password });
+                if (response.success) {
+                    toast.success(response.message);
+                    navigate("/login");
+                } else {
+                    toast.error(response.message);
+                }
+            } catch (error) {
+                toast.error("An error occurred. Please try again.");
             }
         } else {
             setPasswordError('Password is not strong enough');
-            toast.error("there is some error");
         }
     };
 
     return (
-        <div>
+        <div className="signup-page">
             <h2>Signup</h2>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -63,12 +67,12 @@ const SignupPage = () => {
                         onChange={handlePasswordChange}
                         required
                     />
-                    {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+                    {passwordError && <p className="error-message">{passwordError}</p>}
                 </div>
                 <button type="submit">Signup</button>
             </form>
         </div>
     );
-}
+};
 
-export default SignupPage
+export default SignupPage;

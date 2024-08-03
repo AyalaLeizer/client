@@ -1,12 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from './pages/home/HomePage.jsx';
 import SignupPage from './pages/signup/SignupPage.jsx';
 import LoginPage from './pages/login/LoginPage.jsx';
+import MoviesPage from './pages/movies/MoviesPage.jsx';
+import AllMembersPage from './pages/members/AllMembersPage.jsx';
+import SubscriptionPage from './pages/subscription/SubscriptionPage.jsx';
 import AuthProvider from './context/authContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import PublicRoute from './components/PublicRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -15,20 +20,55 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <SignupPage />,
+        element: (
+          <PublicRoute>
+            <SignupPage />
+          </PublicRoute>
+        ),
       },
       {
         path: "/login",
-        element: <LoginPage />,
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
       },
       {
         path: "/home",
-        element: <HomePage />,
+        element: (
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/movies",
+        element: (
+          <ProtectedRoute>
+            <MoviesPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/members",
+        element: (
+          <ProtectedRoute>
+            <AllMembersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/subscriptions",
+        element: (
+          <ProtectedRoute>
+            <SubscriptionPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
 ]);
-
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -36,4 +76,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <RouterProvider router={router} />
     </AuthProvider>
   </React.StrictMode>,
-)
+);

@@ -5,10 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
-
   return (
     <div className='app'>
-       <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -20,10 +19,10 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <NavigationBar/>
+      <NavigationBar />
       <Outlet />
     </div>
   )
 }
 
-export default App
+export default App;

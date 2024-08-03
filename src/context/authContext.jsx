@@ -2,17 +2,17 @@ import * as React from "react";
 
 export const AuthContext = React.createContext(null);
 
-const AuthProvider = ({children}) => {
-  const [user,setUser] = React.useState(null);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = React.useState(null);
   const [error, setError] = React.useState("");
 
   React.useEffect(() => {
     const userString = localStorage.getItem("user");
-    if(userString) {
-      const loggedUser =  JSON.parse(userString);
+    if (userString) {
+      const loggedUser = JSON.parse(userString);
       setUser(loggedUser);
     }
-  },[])
+  }, []);
 
   const handleLogin = async (auth) => {
     if (!auth.userName || !auth.password) return;
@@ -26,17 +26,15 @@ const AuthProvider = ({children}) => {
     });
     const data = await res.json();
 
-    if(!res.ok) {
-      console.log(data.message);
-      setError(data.message)
-      return false;
+    if (!res.ok) {
+      setError(data.message);
+      return { success: false, message: data.message };
     }
-    if(res.ok) {
-      console.log(data.message);
+    if (res.ok) {
       setUser(data);
       setError("");
       localStorage.setItem("user", JSON.stringify(data));
-      return true;
+      return { success: true, message: "User logged in successfully" };
     }
   };
 
@@ -46,7 +44,6 @@ const AuthProvider = ({children}) => {
       localStorage.removeItem("user");
       setError("");
     } catch (error) {
-      console.log(error);
       setError(error.message);
     }
   };
@@ -61,23 +58,20 @@ const AuthProvider = ({children}) => {
     });
     const data = await res.json();
 
-    if(!res.ok) {
-      console.log(data.message);
+    if (!res.ok) {
       setError(data.message);
-      return false;
+      return { success: false, message: data.message };
     }
-    if(res.ok) {
-      console.log(data.message);
+    if (res.ok) {
       setUser(data);
       setError("");
-    //   localStorage.setItem("user", JSON.stringify(data));
-      return true;
+      return { success: true, message: "User signed up successfully" };
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ error,user, handleLogin, handleSignup, handleLogout }}
+      value={{ error, user, handleLogin, handleSignup, handleLogout }}
     >
       {children}
     </AuthContext.Provider>
